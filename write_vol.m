@@ -80,13 +80,13 @@ for iBScan = 1:header.NumBScans
     fwrite(fileID, bScanHeader.Spare(:, iBScan), 'int8');
     
     % Write the segmentation data 
-    fseek(fileID, 2048+(header.SizeXSlo*header.SizeYSlo)+((iBScan-1)*(header.BScanHdrSize+header.SizeX*header.SizeZ*4))+256, -1 );
+    fseek(fileID, 2048+(header.SizeXSlo*header.SizeYSlo)+((iBScan-1)*(header.BScanHdrSize+header.SizeX*header.SizeZ*4))+bScanHeader.OffSeg(iBScan), -1 );
     for iBoundary = 1:bScanHeader.NumSeg(iBScan)
         fwrite(fileID, bScanHeader.(sprintf('Boundary_%d', iBoundary))(iBScan, :), 'float');
     end
     
     % Fill the rest of bScanHeader with zero (int8)
-    fillbytes = zeros(1, bScanHeader.BScanHdrSize(iBScan)-256-bScanHeader.NumSeg(iBScan)*header.SizeX*4);
+    fillbytes = zeros(1, bScanHeader.BScanHdrSize(iBScan)-bScanHeader.OffSeg(iBScan)-bScanHeader.NumSeg(iBScan)*header.SizeX*4);
     fwrite(fileID, fillbytes, 'int8');
     
     % Rotate the BScan to the orientation which the HEYEX saves BScans
@@ -100,17 +100,19 @@ for iBScan = 1:header.NumBScans
 end
 
 %% Write the Thickness Grid
-fseek(fileID, header.GridOffset, -1);
-fwrite(fileID, thicknessGrid.Type, 'int32');
-fwrite(fileID, thicknessGrid.Diameter, 'double');
-fwrite(fileID, thicknessGrid.CenterPos, 'double');
-fwrite(fileID, thicknessGrid.CentralThk, 'float32');
-fwrite(fileID, thicknessGrid.MinCentralThk, 'float32');
-fwrite(fileID, thicknessGrid.MaxCentralThk, 'float32');
-fwrite(fileID, thicknessGrid.TotalVolume, 'float32');
-for i = 1:9
-    fwrite(fileID, thicknessGrid.Sectors(i).Thickness, 'float32');
-    fwrite(fileID, thicknessGrid.Sectors(i).Volume, 'float32');
+if header.GridType ~= 0  % If the GridType is zero, there is no thickness information to be written
+    fseek(fileID, header.GridOffset, -1);
+    fwrite(fileID, thicknessGrid.Type, 'int32');
+    fwrite(fileID, thicknessGrid.Diameter, 'double');
+    fwrite(fileID, thicknessGrid.CenterPos, 'double');
+    fwrite(fileID, thicknessGrid.CentralThk, 'float32');
+    fwrite(fileID, thicknessGrid.MinCentralThk, 'float32');
+    fwrite(fileID, thicknessGrid.MaxCentralThk, 'float32');
+    fwrite(fileID, thicknessGrid.TotalVolume, 'float32');
+    for i = 1:9
+        fwrite(fileID, thicknessGrid.Sectors(i).Thickness, 'float32');
+        fwrite(fileID, thicknessGrid.Sectors(i).Volume, 'float32');
+    end
 end
 
 %%
