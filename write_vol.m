@@ -46,7 +46,7 @@ fwrite(fileID, header.ReferenceID, 'uint8');
 fwrite(fileID, header.PID, 'int32');
 fwrite(fileID, header.PatientID, 'uint8');
 fwrite(fileID, header.Padding, 'int8');
-fwrite(fileID, header.DOB, 'double');
+fwrite(fileID, (datenum(header.DOB)-datenum('30 December 1899 00:00:00')), 'double');
 fwrite(fileID, header.VID, 'int32');
 fwrite(fileID, header.VisitID, 'uint8');
 fwrite(fileID, (datenum(header.VisitDate)-datenum('30 December 1899 00:00:00')), 'double');
