@@ -5,9 +5,6 @@ Heildelberg Engineering (HE) is one of the most dominent SD-OCT manufacturers fo
 
 The Write_OCT_VOL might be useful if someone wants to modify OCT images or their information (cropping images, changing the segmetation, etc) and afterwards save them again in the .vol format.
 
-In this repository, I have also included a MATLAB code to read *.vol files, which was originally writen by Radim Kolar, Brno University, Czech Republic, modified by Markus Mayer, Pattern Recognition Lab, University of Erlangen-Nuremberg, and modified by me, Seyedamirhosein Motamedi from Charité - University Medicine Berlin. 
-
-
 ## Usage
 
 To run this code, MATLAB R2012b or later is needed, without the need to install any additional MATLAB Toolboxes. An instruction on how to call the write_vol function in MATLAB and more details about this fuction are provided at the beginning of the write_vol.m file. 
